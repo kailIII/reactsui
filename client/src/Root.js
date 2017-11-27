@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import App from './App.js';
 import { HashRouter as Router } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 
 class Root extends Component {
     render() {
         return (
             <Router>
-                <App />
+                <CookiesProvider>
+                    <App />
+                </CookiesProvider>
             </Router>
         );
     }

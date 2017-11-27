@@ -1,0 +1,10 @@
+{
+  "admin@isp-com": {
+    "pwd": "21232f297a57a5a743894a0e4a801fc3",
+    "auth_token": "e8e1510de6fabf01d6d718c427b43a5e"
+  },
+  "other@isp-com": {
+    "pwd": "795f3202b17cb6bc3d4b771d8c6c9eaf",
+    "auth_token": "66a2a665ac769b381cdc74d617e8dcde"
+  }
+}
