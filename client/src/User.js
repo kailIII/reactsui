@@ -16,7 +16,7 @@ class User extends Component {
     }
 
     getUser() {
-        fetch('http://localhost:8080/user', {
+        fetch('http://localhost:8089/user', {
             headers: {
                 'Accept': 'application/json, */*',
                 'Content-Type': 'application/json',
