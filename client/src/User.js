@@ -1,39 +1,14 @@
 import React, { Component } from 'react';
+import { withStore } from 'react-observable-store';
 import { withCookies } from 'react-cookie';
 import { Redirect } from 'react-router-dom';
+import UserComponent from './components/User';
+import { profileGetUser } from './actions.js';
 
 class User extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: {}
-        }
-        this.getUser = this.getUser.bind(this);
-    }
 
     componentWillMount() {
-        this.getUser();
-    }
-
-    getUser() {
-        fetch('http://localhost:8089/user', {
-            headers: {
-                'Accept': 'application/json, */*',
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + this.props.cookies.get('auth_token')
-            }
-        })
-        .then((res) => {console.log(res); return res.json()})
-        .then((data) => {
-            console.log(data);
-            if (data.success) {
-                this.setState({user: data.user});
-            }
-        });
-    }
-
-    logout() {
-        this.props.cookies.remove('auth_token');
+        profileGetUser(this.props.cookies.get('auth_token'));
     }
 
     render() {
@@ -41,11 +16,9 @@ class User extends Component {
             return <Redirect to="/login" />
         }
         return (
-            <div>
-                <pre>{JSON.stringify(this.state.user)}</pre>
-            </div>
+            <UserComponent {...this.props} />
         )
     }
 }
 
-export default withCookies(User);
+export default withStore('profile', withCookies(User));

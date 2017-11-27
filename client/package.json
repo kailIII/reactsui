@@ -36,6 +36,7 @@
     "react-cookie": "^2.1.2",
     "react-dev-utils": "^4.2.1",
     "react-dom": "^16.1.1",
+    "react-observable-store": "^0.6.2",
     "react-router-dom": "^4.2.2",
     "semantic-ui": "^2.2.13",
     "semantic-ui-react": "^0.76.0",

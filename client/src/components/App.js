@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import imgLogo from './assets/images/logo.png';
+import imgLogo from '../assets/images/logo.png';
 import { Dropdown, Icon, Menu } from 'semantic-ui-react';
 import Home from './Home';
 import Home2 from './Home2';
-import Login from './Login';
-import User from './User';
+import Login from '../Login';
+import User from '../User';
 import Logout from './Logout';
 import Footer from './Footer';
 import { Route, Link } from 'react-router-dom'
 import { withCookies } from 'react-cookie';
-import './App.css';
+import '../assets/App.css';
 
 class App extends Component {
     render() {

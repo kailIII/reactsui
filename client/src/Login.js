@@ -1,44 +1,34 @@
 import React, { Component } from 'react';
+import { withStore } from 'react-observable-store';
 import { withCookies } from 'react-cookie';
-import { Redirect } from 'react-router-dom';
-import { Button, Form, Message } from 'semantic-ui-react';
+import { Redirect, withRouter } from 'react-router-dom';
+import LoginComponent from './components/Login';
+import {
+    loginEmail,
+    loginPwd,
+    loginSubmit
+} from './actions.js';
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            error: false,
-            email: '',
-            pwd: ''
-        };
         this.handleChange = this.handleChange.bind(this);
         this.submit = this.submit.bind(this);
     }
 
     handleChange(e, { name, value }) {
-        this.setState({ [name]: value });
+        switch(name) {
+            case 'email': loginEmail(value); break;
+            case 'pwd': loginPwd(value); break;
+            default: ;
+        }
     }
 
     submit(e) {
         e.preventDefault();
-        var auth_token = btoa(this.state.email+':'+this.state.pwd);
-
-        fetch('http://localhost:8089/login', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + auth_token
-            }
-        })
-        .then(res => res.json())
-        .then((data) => {
-            if (data.success) {
-                this.props.cookies.set('auth_token', auth_token);
-                this.props.history.push('/');
-            } else {
-                this.setState({error: true});
-            }
+        loginSubmit((auth_token) => {
+            this.props.cookies.set('auth_token', auth_token);
+            this.props.history.push('/');
         });
     }
 
@@ -47,27 +37,12 @@ class Login extends Component {
             return <Redirect to="/user" />
         }
         return (
-            <div className="ui main text container">
-                <h1 className="ui header">Login</h1>
-
-                <Form error={this.state.error} onSubmit={this.submit}>
-                    <Form.Field required>
-                        <label>E-mail</label>
-                        <Form.Input name="email" placeholder='E-mail' onChange={this.handleChange} />
-                    </Form.Field>
-                    <Form.Field required>
-                        <label>Password</label>
-                        <Form.Input name="pwd" type="password" placeholder='Password' onChange={this.handleChange}/>
-                    </Form.Field>
-                    <Message error
-                        header='Error'
-                        content='E-mail or password is wrong'
-                    />
-                    <Button type='submit'>Submit</Button>
-                </Form>
-            </div>
+            <LoginComponent {...this.props}
+                handleChange={this.handleChange}
+                submit={this.submit}
+            />
         );
     }
 }
 
-export default withCookies(Login);
+export default withStore('login', withRouter(withCookies(Login)));

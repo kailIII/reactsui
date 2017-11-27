@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import imgRachel from './assets/images/rachel.png';
+import imgRachel from '../assets/images/rachel.png';
 import { Button } from 'semantic-ui-react';
 import { Header, Image, Modal } from 'semantic-ui-react';
 

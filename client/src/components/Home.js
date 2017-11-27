@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import imgMediaParagraph from './assets/images/media-paragraph.png';
-import imgParagraph from './assets/images/paragraph.png';
-import './App.css';
+import imgMediaParagraph from '../assets/images/media-paragraph.png';
+import imgParagraph from '../assets/images/paragraph.png';
 
 class Home extends Component {
     render() {
