@@ -21,23 +21,20 @@ class Login extends Component {
 
     submit(e) {
         e.preventDefault();
+        var auth_token = btoa(this.state.email+':'+this.state.pwd);
 
         fetch('http://localhost:8089/login', {
-            method: 'POST',
+            method: 'GET',
             headers: {
-                'Accept': 'application/json, */*',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: this.state.email,
-                pwd: this.state.pwd,
-            })
+                'Authorization': 'Basic ' + auth_token
+            }
         })
-        .then((res) => {console.log(res); return res.json()})
+        .then(res => res.json())
         .then((data) => {
-            console.log(data);
             if (data.success) {
-                this.props.cookies.set('auth_token', data.auth_token);
+                this.props.cookies.set('auth_token', auth_token);
                 this.props.history.push('/');
             } else {
                 this.setState({error: true});
@@ -52,7 +49,7 @@ class Login extends Component {
         return (
             <div className="ui main text container">
                 <h1 className="ui header">Login</h1>
-                <p>Auth Token: {this.props.cookies.auth_token}</p>
+
                 <Form error={this.state.error} onSubmit={this.submit}>
                     <Form.Field required>
                         <label>E-mail</label>

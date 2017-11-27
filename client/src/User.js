@@ -20,7 +20,7 @@ class User extends Component {
             headers: {
                 'Accept': 'application/json, */*',
                 'Content-Type': 'application/json',
-                'x-authorization': this.props.cookies.get('auth_token')
+                'Authorization': 'Basic ' + this.props.cookies.get('auth_token')
             }
         })
         .then((res) => {console.log(res); return res.json()})

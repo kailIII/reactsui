@@ -1,19 +1,18 @@
-'use strict';
+"use strict";
 
 var db = require('./db');
+const authMiddleware = require('./auth'); // Uses basic HTTP Auth
 
 var API = function (app) {
 
-    app.post('/login', function (req, res, next) {
-        var user = db.authByLogin(req.body.email, req.body.pwd);
-        return user ? res.send({success: true, auth_token: user.auth_token})
-            : res.send({'success': false});
+    app.get('/login', authMiddleware, function (req, res, next) {
+        res.status(200).send({success: true});
     });
 
-    app.get('/user', function (req, res) {
-        var user = db.authByToken(req.headers['x-authorization']);
-        user ? res.send({success: true, user: user})
-            : res.send({success: false})
+    app.get('/user', authMiddleware, function (req, res) {
+        var token = req.headers['authorization'].replace('Basic ', '');
+        var user = db.findByToken(token);
+        res.status(200).send({success: true, user: user});
     });
 
     app.get('/', function (req, res) {

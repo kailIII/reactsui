@@ -1,52 +1,60 @@
-'use strict';
+"use strict";
 
-var md5 = require('md5');
+var md5 = require('md5'); // TODO: use another crypto library
+const btoa = require('btoa');
 var store = require('data-store')('database', {cwd: 'data'});
 
 var DB = function () {
 
-    function sk(key) {
+    function asKey(key) {
         return key ? key.replace(/\./g, '-') : 'xxx';
     }
 
-    function authByLogin(email, pwd) {
-        var email = sk(email);
-        if (store.has(email)) {
-            var user = store.get(email);
+    function findByLogin(email, pwd) {
+        var key = asKey(email);
+        if (store.has(key)) {
+            var user = store.get(key);
             if (md5(pwd) === user.pwd) {
-                user.auth_token = md5(email+':'+pwd);
-                store.set(email, user);
                 return user;
             }
         }
         return false;
     }
 
-    function authByToken(token) {
-        var users = store.get();
+    function findByToken(token) {
+        var users, item = store.get();
         for (var key in store.get()) {
-            if (store.get(key).auth_token === token) {
-                return store.get(key);
+            item = store.get(key);
+            if (item.auth_token === token) {
+                return item;
             }
         }
         return false;
     }
 
-    if (!store.has(sk('admin@isp.com'))) {
-        store.set(sk('admin@isp.com'), {
+    function storeItem(key, data) {
+        store.set(asKey(key), data);
+    }
+
+    if (!store.has(asKey('admin@isp.com'))) {
+        store.set(asKey('admin@isp.com'), {
+            email: 'admin@isp.com',
             pwd: md5('admin')
         });
     }
-    if (!store.has(sk('other@isp.com'))) {
-        store.set(sk('other@isp.com'), {
+    if (!store.has(asKey('other@isp.com'))) {
+        store.set(asKey('other@isp.com'), {
+            email: 'other@isp.com',
             pwd: md5('other')
         });
     }
     store.save();
 
     return {
-        authByLogin: authByLogin,
-        authByToken: authByToken
+        asKey: asKey,
+        findByLogin: findByLogin,
+        findByToken: findByToken,
+        store: storeItem
     }
 }
 
