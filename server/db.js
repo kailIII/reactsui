@@ -1,3 +1,5 @@
+'use strict';
+
 var md5 = require('md5');
 var store = require('data-store')('database', {cwd: 'data'});
 
@@ -22,7 +24,7 @@ var DB = function () {
 
     function authByToken(token) {
         var users = store.get();
-        for (key in store.get()) {
+        for (var key in store.get()) {
             if (store.get(key).auth_token === token) {
                 return store.get(key);
             }

@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var parseurl = require('parseurl');
 var session = require('express-session');
