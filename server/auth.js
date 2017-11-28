@@ -4,8 +4,7 @@
 var db = require('./db');
 const basicAuth = require('express-basic-auth');
 const btoa = require('btoa');
-const UsersModel = require('./models/users');
-var Users = new UsersModel(db);
+const User = require('./models/user');
 
 /**
  * Validate authentication
@@ -15,14 +14,14 @@ var Users = new UsersModel(db);
  */
 function myAuthorizer(username, password, cb) {
     console.log('Request by ' + username);
-    Users.findByLogin(username, password, (user) => {
+    User.findByLogin(username, password, (user) => {
         if (!user) {
             return cb(null, false);
         }
 
         // Update user token
         user.auth_token = btoa(username+':'+password);
-        Users.store(user, (user) => {
+        User.store(user, (user) => {
             return cb(null, true);
         });
     });

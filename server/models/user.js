@@ -7,32 +7,51 @@ const btoa = require('btoa');
 
 // Define user model
 class User extends Model {
+
+    /**
+     * Get model tablename
+     * @type {String}
+     */
     static get tableName() {
         return 'users';
     }
+
+    /**
+     * Define user model attributes validation
+     * @type {Object}
+     */
+    static get jsonSchema () {
+        return {
+            type: 'object',
+            required: ['email', 'pwd'],
+
+            properties: {
+                id: {type: 'integer'},
+                email: {type: 'string', minLength: 1, maxLength: 80},
+                pwd: {type: 'string', minLength: 1},
+                auth_token: {type: 'string'}
+            }
+        }
+    }
+
+    /**
+     * Dispense new user object from data
+     * @param  {Object} data The user data
+     * @return {Object}      The new user
+     */
     static dispense(data) {
         return {
-            email: user.email,
-            pwd: md5(user.pwd)
+            email: data.email,
+            pwd: md5(data.pwd)
         };
     }
-}
-
-/**
- * Create user model interface
- * @return {Function} The database interface
- */
-var Users = function (db) {
-
-    // Give the connection to objection.
-    Model.knex(db);
 
     /**
      * Find user by email
      * @param  {String}   email The user email
      * @param  {Function} cb    The async callback
      */
-    function findByEmail(email, cb) {
+    static findByEmail(email, cb) {
         User.query()
         .where('email', email)
         .then(users => {
@@ -46,7 +65,7 @@ var Users = function (db) {
      * @param  {String}   pwd   The user password
      * @param  {Function} cb    The async callback
      */
-    function findByLogin(email, pwd, cb) {
+    static findByLogin(email, pwd, cb) {
         User.query()
         .where('email', email)
         .where('pwd', md5(pwd))
@@ -60,7 +79,7 @@ var Users = function (db) {
      * @param  {String}   token The auth token
      * @param  {Function} cb    The async callback
      */
-    function findByToken(token, cb) {
+    static findByToken(token, cb) {
         User.query()
         .where('auth_token', token)
         .then(users => {
@@ -69,58 +88,26 @@ var Users = function (db) {
     }
 
     /**
-     * Insert user
-     * @param  {Object}   data The user to insert
-     * @param  {Function} cb   [description]
-     * @return {[type]}        [description]
-     */
-    function insertUser(data, cb) {
-        User.query().insert(data)
-        .then(() => {
-            cb(data);
-        });
-    }
-
-    /**
-     * Update user with data
-     * @param  {Number}   id   The user id
-     * @param  {Object}   data The data to update
-     * @param  {Function} cb   The async callback
-     */
-    function updateUser(id, data, cb) {
-        User.query()
-        .patchAndFetchById(id, data)
-        .then(cb);
-    }
-
-    /**
      * Store user
      * @param  {Object}   user The user to be stored
      * @param  {Function} cb   The async callback
      */
-    function store(user, cb) {
+    static store(user, cb) {
         User.query()
-        .where('id', user.id)
+        .where('id', user.id || null)
         .then(users => {
             if (users.length === 0) {
                 user = User.dispense(user);
-                insertUser(user, cb);
+                User.query()
+                .insert(user)
+                .then(cb);
             } else {
-                updateUser(user.id, user, cb);
+                User.query()
+                .patchAndFetchById(user.id, user)
+                .then(cb);
             }
         });
     }
-
-    /**
-     * The database API
-     * @type {Object}
-     */
-    return {
-        findByEmail: findByEmail,
-        findByLogin: findByLogin,
-        findByToken: findByToken,
-        store: store
-    }
 }
 
-module.exports = Users;
+module.exports = User;

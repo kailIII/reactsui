@@ -14,5 +14,8 @@ const knex = Knex({
     }
 });
 
+// Give the connection to objection.
+Model.knex(knex);
+
 // Export knex
 module.exports = knex;
