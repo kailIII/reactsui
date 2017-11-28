@@ -27,26 +27,18 @@ var Users = function (db) {
     // Give the connection to objection.
     Model.knex(db);
 
-    // Create database schema
-    const schemaPromise = db.schema.createTableIfNotExists('users', table => {
-        table.increments('id').primary();
-        table.string('email');
-        table.string('pwd');
-        table.string('auth_token');
-    });
-
-    // Migrate data if not exists
-    schemaPromise.then(() => {
-
-        // Check exists
+    /**
+     * Find user by email
+     * @param  {String}   email The user email
+     * @param  {Function} cb    The async callback
+     */
+    function findByEmail(email, cb) {
         User.query()
+        .where('email', email)
         .then(users => {
-            //console.log('Found ' + users.length + ' users');
-            if (users.length === 0) {
-                return User.query().insert({email: 'admin@isp.com', pwd: md5('admin')});
-            }
+            cb(users.length ? users[0] : false);
         });
-    });
+    }
 
     /**
      * Find user by email and password
@@ -124,6 +116,7 @@ var Users = function (db) {
      * @type {Object}
      */
     return {
+        findByEmail: findByEmail,
         findByLogin: findByLogin,
         findByToken: findByToken,
         store: store
