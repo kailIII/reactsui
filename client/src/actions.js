@@ -14,6 +14,10 @@ export const loginError = (value) => {
     Store.update('login', { error: value });
 };
 
+export const logout = () => {
+    Store.update('profile', { user: false });
+};
+
 export const loginSubmit = (cb) => {
     var auth_token = btoa(Store.get('login.email')+':'+Store.get('login.pwd'));
     return fetch(endpoint + '/login', {
@@ -28,6 +32,7 @@ export const loginSubmit = (cb) => {
     .then((data) => {
         if (data.success) {
             cb(auth_token);
+            profileGetUser(auth_token);
         } else {
             Store.set('login.error', true);
         }

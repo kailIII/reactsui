@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom'
-import { withCookies } from 'react-cookie';
-import TopMenu from './TopMenu';
+import { Route } from 'react-router-dom';
+import TopMenu from '../containers/TopMenu';
 import Home from './Home';
 import Home2 from './Home2';
-import Logout from './Logout';
 import Footer from './Footer';
+import Logout from '../containers/Logout';
 import Login from '../containers/Login';
 import User from '../containers/User';
 import '../assets/App.css';
@@ -30,4 +29,4 @@ class App extends Component {
     }
 }
 
-export default withCookies(App);
+export default App;

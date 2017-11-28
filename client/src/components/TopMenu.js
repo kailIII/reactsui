@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import imgLogo from '../assets/images/logo.png';
 import { Dropdown, Icon, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
 
 class TopMenu extends Component {
     render() {
@@ -39,18 +38,18 @@ class TopMenu extends Component {
                         </div>
                         <div className='results' />
                     </div>
-                    { !this.props.cookies.get('auth_token') && (
-                        <Menu.Item name='editorials' as={Link} to="/login">
+                    { !this.props.user && (
+                        <Menu.Item name='Login' as={Link} to="/login">
                             Login
                         </Menu.Item>
                     ) }
-                    { this.props.cookies.get('auth_token') && (
-                        <Menu.Item name='editorials' as={Link} to="/user">
-                            User
+                    { this.props.user && (
+                        <Menu.Item name='User' as={Link} to="/user">
+                            { this.props.user.email }
                         </Menu.Item>
                     ) }
-                    { this.props.cookies.get('auth_token') && (
-                        <Menu.Item name='logout' as={Link} to="/logout">
+                    { this.props.user && (
+                        <Menu.Item name='Logout' as={Link} to="/logout">
                             Logout
                         </Menu.Item>
                     ) }
@@ -60,4 +59,4 @@ class TopMenu extends Component {
     }
 }
 
-export default withCookies(TopMenu);
+export default TopMenu;

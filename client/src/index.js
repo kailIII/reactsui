@@ -13,7 +13,7 @@ Store.init({
         pwd: ''
     },
     profile: {
-        user: {}
+        user: false
     }
 });
 
