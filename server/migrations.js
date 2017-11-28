@@ -7,7 +7,7 @@ const db = require('./db');
 const User = require('./models/user');
 
 // Create users table if not exists
-const schemaPromise = db.schema.createTableIfNotExists('users', table => {
+const usersTablePromise = db.schema.createTableIfNotExists('users', table => {
     table.increments('id').primary();
     table.string('email');
     table.string('pwd');
@@ -15,7 +15,7 @@ const schemaPromise = db.schema.createTableIfNotExists('users', table => {
 });
 
 // Migrate data if not exists
-schemaPromise.then(() => {
+usersTablePromise.then(() => {
 
     // Seed users
     User.findByEmail('admin@isp.com', (result) => {
@@ -24,4 +24,13 @@ schemaPromise.then(() => {
         }
     });
 
+});
+
+// Run migrations
+db.schema.table('users', function (table) {
+    table.boolean('active').defaultTo(false);
+}).then((err, result) => {
+    console.log(result));
+}).catch((err) => {
+    console.log('error', err);
 });

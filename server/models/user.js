@@ -29,7 +29,8 @@ class User extends Model {
                 id: {type: 'integer'},
                 email: {type: 'string', minLength: 1, maxLength: 80},
                 pwd: {type: 'string', minLength: 1},
-                auth_token: {type: 'string'}
+                auth_token: {type: 'string'},
+                active: {type: 'boolean'}
             }
         }
     }
@@ -69,6 +70,7 @@ class User extends Model {
         User.query()
         .where('email', email)
         .where('pwd', md5(pwd))
+        .where('active', true)
         .then(users => {
             cb(users.length ? users[0] : false);
         });

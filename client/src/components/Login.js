@@ -18,7 +18,7 @@ class Login extends Component {
                     </Form.Field>
                     <Message error
                         header='Error'
-                        content='E-mail or password is wrong'
+                        content='Wrong email/password or the account is not enabled.'
                     />
                     <Button type='submit'>Submit</Button>
                 </Form>
