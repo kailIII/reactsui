@@ -1,60 +1,143 @@
 "use strict";
 
-var md5 = require('md5'); // TODO: use another crypto library
+// Using Objection ORM improved interoperability
+const objection = require('objection');
+const Model = objection.Model;
+const Knex = require('knex');
+const md5 = require('md5'); // TODO: use another crypto library
 const btoa = require('btoa');
-var store = require('data-store')('database', {cwd: 'data'});
 
+// Initialize database connection.
+const knex = Knex({
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection: {
+        filename: './data/database.sqlite3'
+    }
+});
+
+// Give the connection to objection.
+Model.knex(knex);
+
+// Define user model
+class User extends Model {
+    static get tableName() {
+        return 'users';
+    }
+    static dispense(data) {
+        return {
+            email: user.email,
+            pwd: md5(user.pwd)
+        };
+    }
+}
+
+// Create database schema
+const schemaPromise = knex.schema.createTableIfNotExists('users', table => {
+    table.increments('id').primary();
+    table.string('email');
+    table.string('pwd');
+    table.string('auth_token');
+});
+
+// Migrate data if not exists
+schemaPromise.then(() => {
+
+    // Check exists
+    User.query()
+    .then(users => {
+        console.log('Found ' + users.length + ' users');
+        if (users.length === 0) {
+            return User.query().insert({email: 'admin@isp.com', pwd: md5('admin')});
+        }
+    });
+});
+
+/**
+ * Create database models interface
+ * @return {Function} The database interface
+ */
 var DB = function () {
 
-    function asKey(key) {
-        return key ? key.replace(/\./g, '-') : 'xxx';
-    }
-
-    function findByLogin(email, pwd) {
-        var key = asKey(email);
-        if (store.has(key)) {
-            var user = store.get(key);
-            if (md5(pwd) === user.pwd) {
-                return user;
-            }
-        }
-        return false;
-    }
-
-    function findByToken(token) {
-        var users, item = store.get();
-        for (var key in store.get()) {
-            item = store.get(key);
-            if (item.auth_token === token) {
-                return item;
-            }
-        }
-        return false;
-    }
-
-    function storeItem(key, data) {
-        store.set(asKey(key), data);
-    }
-
-    if (!store.has(asKey('admin@isp.com'))) {
-        store.set(asKey('admin@isp.com'), {
-            email: 'admin@isp.com',
-            pwd: md5('admin')
+    /**
+     * Find user by email and password
+     * @param  {String}   email The user email
+     * @param  {String}   pwd   The user password
+     * @param  {Function} cb    The async callback
+     */
+    function findUserByLogin(email, pwd, cb) {
+        User.query()
+        .where('email', email)
+        .where('pwd', md5(pwd))
+        .then(users => {
+            cb(users.length ? users[0] : false);
         });
     }
-    if (!store.has(asKey('other@isp.com'))) {
-        store.set(asKey('other@isp.com'), {
-            email: 'other@isp.com',
-            pwd: md5('other')
+
+    /**
+     * Find user by auth token
+     * @param  {String}   token The auth token
+     * @param  {Function} cb    The async callback
+     */
+    function findUserByToken(token, cb) {
+        User.query()
+        .where('auth_token', token)
+        .then(users => {
+            cb(users.length ? users[0] : false);
         });
     }
-    store.save();
 
+    /**
+     * Insert user
+     * @param  {Object}   data The user to insert
+     * @param  {Function} cb   [description]
+     * @return {[type]}        [description]
+     */
+    function insertUser(data, cb) {
+        User.query().insert(data)
+        .then(() => {
+            cb(data);
+        });
+    }
+
+    /**
+     * Update user with data
+     * @param  {Number}   id   The user id
+     * @param  {Object}   data The data to update
+     * @param  {Function} cb   The async callback
+     */
+    function updateUser(id, data, cb) {
+        User.query()
+        .patchAndFetchById(id, data)
+        .then(cb);
+    }
+
+    /**
+     * Store user
+     * @param  {Object}   user The user to be stored
+     * @param  {Function} cb   The async callback
+     */
+    function storeUser(user, cb) {
+        User.query()
+        .where('id', user.id)
+        .then(users => {
+            if (users.length === 0) {
+                user = User.dispense(user);
+                insertUser(user, cb);
+            } else {
+                updateUser(user.id, user, cb);
+            }
+        });
+    }
+
+    /**
+     * The database API
+     * @type {Object}
+     */
     return {
-        asKey: asKey,
-        findByLogin: findByLogin,
-        findByToken: findByToken,
-        store: storeItem
+        findUserByLogin: findUserByLogin,
+        findUserByToken: findUserByToken,
+        storeUser: storeUser
     }
 }
 
