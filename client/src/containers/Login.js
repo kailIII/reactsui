@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { withStore } from 'react-observable-store';
 import { withCookies } from 'react-cookie';
 import { Redirect, withRouter } from 'react-router-dom';
-import LoginComponent from './components/Login';
+import LoginComponent from '../components/Login';
 import {
     loginEmail,
     loginPwd,
     loginSubmit
-} from './actions.js';
+} from '../actions.js';
 
 class Login extends Component {
     constructor(props) {

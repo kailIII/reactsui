@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Store from 'react-observable-store';
 import './semantic/dist/semantic.min.css';
-import Root from './Root';
+import Root from './containers/Root';
 import registerServiceWorker from './registerServiceWorker';
 
 // Init global state

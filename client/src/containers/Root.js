@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import App from './components/App.js';
+import App from '../components/App.js';
 import { HashRouter as Router } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 
