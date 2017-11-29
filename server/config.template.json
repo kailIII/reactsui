@@ -1,3 +1,10 @@
 {
-    "port": 8089
+    "port": 8089,
+    "db": {
+        "client": "sqlite3",
+        "useNullAsDefault": true,
+        "connection": {
+            "filename": "./data/database.sqlite3"
+        }
+    }
 }

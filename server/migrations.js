@@ -28,9 +28,9 @@ usersTablePromise.then(() => {
 
 // Run migrations
 db.schema.table('users', function (table) {
-    table.boolean('active').defaultTo(false);
+    table.boolean('active').defaultTo(true);
 }).then((err, result) => {
-    console.log(result));
+    console.log(result);
 }).catch((err) => {
     console.log('error', err);
 });

@@ -5,18 +5,22 @@ import './semantic/dist/semantic.min.css';
 import Root from './containers/Root';
 import registerServiceWorker from './registerServiceWorker';
 
-// Init global state
-Store.init({
-    login: {
-        error: false,
-        email: '',
-        pwd: ''
-    },
-    profile: {
-        user: false
+// Fetch client configuration
+fetch('/config.json', {
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     }
-});
+})
+.then(res => res.json())
+.then((config) => {
 
-// Render app
-ReactDOM.render(<Root />, document.getElementById('root'));
-registerServiceWorker();
+    // Init global state
+    Store.init(config);
+
+    // Start app
+    ReactDOM.render(<Root />, document.getElementById('root'));
+    registerServiceWorker();
+
+});

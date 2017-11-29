@@ -12,6 +12,7 @@ client/build
 
 # misc
 server/config.json
+client/public/config.json
 client/.DS_Store
 client/.env.local
 client/.env.development.local

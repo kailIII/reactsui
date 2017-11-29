@@ -1,7 +1,5 @@
 import Store from 'react-observable-store';
 
-const endpoint = 'http://localhost:8089';
-
 export const loginEmail = (value) => {
     Store.update('login', { email: value });
 };
@@ -20,7 +18,8 @@ export const logout = () => {
 
 export const loginSubmit = (cb) => {
     var auth_token = btoa(Store.get('login.email')+':'+Store.get('login.pwd'));
-    return fetch(endpoint + '/login', {
+    var endpoint = Store.get('server.endpoint');
+    fetch(endpoint + '/login', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -44,6 +43,7 @@ export const profileUser = (value) => {
 };
 
 export const profileGetUser = (auth_token) => {
+    var endpoint = Store.get('server.endpoint');
     fetch(endpoint + '/user', {
         headers: {
             'Accept': 'application/json, */*',

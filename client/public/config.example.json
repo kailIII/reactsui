@@ -1,0 +1,13 @@
+{
+    "server": {
+        "endpoint": "http://localhost:8089"
+    },
+    "login": {
+        "error": false,
+        "email": "",
+        "pwd": ""
+    },
+    "profile": {
+        "user": false
+    }
+}
