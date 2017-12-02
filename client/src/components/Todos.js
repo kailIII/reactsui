@@ -3,7 +3,6 @@ import { Form, Message, Radio, Button, Divider, Table, Icon } from 'semantic-ui-
 
 class Todos extends Component {
     render() {
-        console.log(this.props.form);
         var filtered = this.props.items;
         if (this.props.filter === 'active') {
             filtered = this.props.items.filter(item => !!item.complete);
@@ -29,8 +28,8 @@ class Todos extends Component {
                         header='Error'
                         content='Todo is invalid.'
                     />
-                    <Button type='submit'>Submit</Button>
-                    <Button onClick={(e) => this.props.newTodoItem()}>New</Button>
+                    <Button type='submit'>Save</Button>
+                    <Button onClick={(e) => this.props.newTodoItem(e)}>New</Button>
                 </Form>
 
                 <Divider />
@@ -52,7 +51,8 @@ class Todos extends Component {
                                         <Radio toggle checked={!!item.complete} />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <a role="button" onClick={(e) => this.props.editTodoItem(item)}>
+                                        <a role="button" style={{cursor: 'pointer'}}
+                                            onClick={(e) => this.props.editTodoItem(item)}>
                                             { item.description }
                                         </a>
                                     </Table.Cell>
@@ -70,7 +70,9 @@ class Todos extends Component {
                             <Table.Row>
                                 <Table.HeaderCell />
                                 <Table.HeaderCell colSpan='2'>
-                                    <Button floated='right' icon labelPosition='left' primary size='small'>
+                                    <Button floated='right' icon labelPosition='left' primary size='small'
+                                        onClick={(e) => this.props.todosClearComplete()}
+                                        >
                                         <Icon name='user' /> Clear completed
                                     </Button>
                                     <Button size='small' onClick={(e) => this.props.setFilter('all')}>All</Button>
@@ -80,8 +82,6 @@ class Todos extends Component {
                         </Table.Footer>
                     </Table>
                 )}
-
-
 
             </div>
         );

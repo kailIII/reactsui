@@ -32,9 +32,18 @@ var API = function (app) {
     app.post('/todo', function (req, res) {
         console.log('POST todo record', req.body);
         var todo = req.body;
-        Todo.store(todo, (todo) => {
+        Todo.store(todo, (err, todo) => {
             console.log('Store todo record OK');
-            res.status(200).send({success: true, todo: todo});
+            err ? res.status(200).send({success: false, errors: err})
+                : res.status(200).send({success: true, todo: todo});
+        });
+    });
+
+    app.delete('/todo/complete', function (req, res) {
+        console.log('Request clear complete todos');
+        Todo.clearComplete(() => {
+            console.log('Clear complete todos OK');
+            res.status(200).send({success: true});
         });
     });
 

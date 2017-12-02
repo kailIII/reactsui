@@ -77,6 +77,10 @@ export const todosFindAll = () => {
     });
 };
 
+export const todosEditItem = (todo) => {
+    Store.update('todos', {form: todo});
+};
+
 export const todosFormDescription = (value) => {
     Store.set('todos.form.description', value);
 };
@@ -85,8 +89,8 @@ export const todosFormComplete = (value) => {
     Store.set('todos.form.complete', value);
 };
 
-export const todosSubmit = (cb) => {
-    Store.update('todos', {loading: true});
+export const todosSubmit = () => {
+    Store.update('todos', {loading: true, error: false});
     var endpoint = Store.get('server.endpoint');
     fetch(endpoint + '/todo', {
         method: 'POST',
@@ -111,10 +115,29 @@ export const todosSetFilter = (value) => {
     Store.set('todos.filter', value);
 };
 
-export const todosItemRemove = (todo, cb) => {
+export const todosItemRemove = (todo) => {
     Store.update('todos', {loading: true});
     var endpoint = Store.get('server.endpoint');
     fetch(endpoint + '/todo/'+todo.id, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then((data) => {
+        Store.update('todos', {loading: false});
+        if (data.success) {
+            todosFindAll();
+        }
+    });
+}
+
+export const todosClearComplete = () => {
+    Store.update('todos', {loading: true});
+    var endpoint = Store.get('server.endpoint');
+    fetch(endpoint + '/todo/complete', {
         method: 'DELETE',
         headers: {
             'Accept': 'application/json',

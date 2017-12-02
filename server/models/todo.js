@@ -66,12 +66,24 @@ class Todo extends Model {
 
     /**
      * Remove todo
+     * @param  {Number}   id    The todo identifier
      * @param  {Function} cb    The async callback
      */
     static removeById(id, cb) {
         Todo.query()
         .delete()
         .where('id', id)
+        .then(cb);
+    }
+
+    /**
+     * Clear all complete
+     * @param  {Function} cb    The async callback
+     */
+    static clearComplete(cb) {
+        Todo.query()
+        .delete()
+        .where('complete', true)
         .then(cb);
     }
 
@@ -88,13 +100,16 @@ class Todo extends Model {
                 todo = Todo.dispense(todo);
                 Todo.query()
                 .insert(todo)
-                .then(cb);
+                .then(r => cb(null, r))
+                .catch(err => cb(err));
             } else {
                 Todo.query()
                 .patchAndFetchById(todo.id, todo)
-                .then(cb);
+                .then(r => cb(null, cb))
+                .catch(err => cb(err));
             }
-        });
+        })
+        .catch(err => cb(err))
     }
 }
 

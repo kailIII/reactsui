@@ -4,10 +4,12 @@ import TodosComponent from '../components/Todos';
 import TodosLoaderComponent from '../components/TodosLoader';
 import {
     todosFindAll,
+    todosEditItem,
     todosFormDescription,
     todosFormComplete,
     todosSetFilter,
     todosItemRemove,
+    todosClearComplete,
     todosSubmit
 } from '../actions.js';
 
@@ -21,6 +23,7 @@ class Todos extends Component {
         this.setFilter = this.setFilter.bind(this);
         this.removeTodoItem = this.removeTodoItem.bind(this);
         this.submit = this.submit.bind(this);
+        this.todosClearComplete = this.todosClearComplete.bind(this);
     }
 
     componentDidMount() {
@@ -36,16 +39,15 @@ class Todos extends Component {
     }
 
     editTodoItem(todo) {
-        Store.update('todos', {form: todo});
+        todosEditItem(todo);
     }
 
     removeTodoItem(todo) {
-        todosItemRemove(todo, () => {
-            console.log('Todo removed');
-        });
+        todosItemRemove(todo);
     }
 
-    newTodoItem() {
+    newTodoItem(e) {
+        e.preventDefault();
         var todo = {id:null, description:'', complete: false};
         this.editTodoItem(todo);
     }
@@ -57,9 +59,11 @@ class Todos extends Component {
     submit(e) {
         e.preventDefault();
         var todo = Store.get('todos.form');
-        todosSubmit(todo, (result) => {
-            console.log('saved', result);
-        });
+        todosSubmit(todo);
+    }
+
+    todosClearComplete() {
+        todosClearComplete();
     }
 
     render() {
@@ -73,6 +77,7 @@ class Todos extends Component {
                 setFilter={this.setFilter}
                 removeTodoItem={this.removeTodoItem}
                 submit={this.submit}
+                todosClearComplete={todosClearComplete}
             />
         );
     }
