@@ -2,6 +2,7 @@
 
 const db = require('./db');
 const User = require('./models/user');
+const Todo = require('./models/todo');
 const authMiddleware = require('./auth'); // Uses basic HTTP Auth
 
 var API = function (app) {
@@ -17,6 +18,31 @@ var API = function (app) {
         User.findByToken(token, (user) => {
             console.log('User record OK');
             res.status(200).send({success: true, user: user});
+        });
+    });
+
+    app.get('/todo', function (req, res) {
+        console.log('Request todos records');
+        Todo.findAll((items) => {
+            console.log('Todos records OK');
+            res.status(200).send({success: true, items: items});
+        });
+    });
+
+    app.post('/todo', function (req, res) {
+        console.log('POST todo record', req.body);
+        var todo = req.body;
+        Todo.store(todo, (todo) => {
+            console.log('Store todo record OK');
+            res.status(200).send({success: true, todo: todo});
+        });
+    });
+
+    app.delete('/todo/:id', function (req, res) {
+        console.log('Request removo todo record');
+        Todo.removeById(req.params.id, () => {
+            console.log('Remove todo record OK');
+            res.status(200).send({success: true});
         });
     });
 

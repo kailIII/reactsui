@@ -11,11 +11,14 @@ class TopMenu extends Component {
                     <img alt="" className="logo" src={imgLogo} />
                     <span className="mobile hidden">Brand</span>
                 </a>
-                <Menu.Item name='editorials' as={Link} to="/">
+                <Menu.Item name='home' as={Link} to="/">
                     Home
                 </Menu.Item>
-                <Menu.Item name='editorials' as={Link} to="/home2">
+                <Menu.Item name='home2' as={Link} to="/home2">
                     Home2
+                </Menu.Item>
+                <Menu.Item name='todos' as={Link} to="/todos">
+                    TodosMVC
                 </Menu.Item>
                 <Dropdown item icon='ellipsis vertical' simple>
                     <Dropdown.Menu>

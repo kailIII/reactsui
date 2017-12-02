@@ -9,5 +9,15 @@
     },
     "profile": {
         "user": false
+    },
+    "todos": {
+        "loading": false,
+        "items": [],
+        "filter": "all",
+        "form": {
+            "id": null,
+            "description": "",
+            "complete": false
+        }
     }
 }

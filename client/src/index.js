@@ -17,7 +17,7 @@ fetch('/config.json', {
 .then((config) => {
 
     // Init global state
-    Store.init(config);
+    Store.init(config, true);
 
     // Start app
     ReactDOM.render(<Root />, document.getElementById('root'));

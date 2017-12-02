@@ -58,3 +58,74 @@ export const profileGetUser = (auth_token) => {
         }
     });
 };
+
+export const todosFindAll = () => {
+    Store.update('todos', {loading: true});
+    var endpoint = Store.get('server.endpoint');
+    fetch(endpoint + '/todo', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then((data) => {
+        Store.update('todos', {loading: false});
+        if (data.success) {
+            Store.set('todos.items', data.items);
+        }
+    });
+};
+
+export const todosFormDescription = (value) => {
+    Store.set('todos.form.description', value);
+};
+
+export const todosFormComplete = (value) => {
+    Store.set('todos.form.complete', value);
+};
+
+export const todosSubmit = (cb) => {
+    Store.update('todos', {loading: true});
+    var endpoint = Store.get('server.endpoint');
+    fetch(endpoint + '/todo', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Store.get('todos.form'))
+    })
+    .then(res => res.json())
+    .then((data) => {
+        Store.update('todos', {loading: false});
+        if (data.success) {
+            todosFindAll();
+        } else {
+            Store.set('todos.error', true);
+        }
+    });
+}
+
+export const todosSetFilter = (value) => {
+    Store.set('todos.filter', value);
+};
+
+export const todosItemRemove = (todo, cb) => {
+    Store.update('todos', {loading: true});
+    var endpoint = Store.get('server.endpoint');
+    fetch(endpoint + '/todo/'+todo.id, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then((data) => {
+        Store.update('todos', {loading: false});
+        if (data.success) {
+            todosFindAll();
+        }
+    });
+}
